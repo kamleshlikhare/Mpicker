@@ -78,7 +78,7 @@ DatePicker.prototype.show = function(options, cb, errCb) {
 
 	cordova.exec(callback,
 		errCallback,
-		"DatePickerPlugin",
+		"MdPickerPlugin",
 		defaults.mode,
 		[defaults]
 	);
