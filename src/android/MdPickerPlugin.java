@@ -11,7 +11,7 @@
  * Added option `titleText`.
  */
 
-package com.plugin.datepicker;
+package com.plugin.mdpicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,13 +38,13 @@ import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.TimePicker;
 
 @SuppressLint("NewApi")
-public class DatePickerPlugin extends CordovaPlugin {
+public class MdPickerPlugin extends CordovaPlugin {
 
 	private static final String ACTION_DATE = "date";
 	private static final String ACTION_TIME = "time";
 	private static final String RESULT_ERROR = "error";
 	private static final String RESULT_CANCEL = "cancel";
-	private final String pluginName = "DatePickerPlugin";
+	private final String pluginName = "MdPickerPlugin";
 	
 	// On some devices, onDateSet or onTimeSet are being called twice
 	private boolean called = false;
@@ -64,7 +64,7 @@ public class DatePickerPlugin extends CordovaPlugin {
 	}
 
 	public synchronized void show(final JSONArray data, final CallbackContext callbackContext) {
-		DatePickerPlugin datePickerPlugin = this;
+		MdPickerPlugin datePickerPlugin = this;
 		Context currentCtx = cordova.getActivity();
 		Runnable runnable;
 		JsonDate jsonDate = new JsonDate().fromJson(data);
@@ -88,7 +88,7 @@ public class DatePickerPlugin extends CordovaPlugin {
 	private int timePickerHour = 0;
 	private int timePickerMinute = 0;
 	
-	private Runnable runnableTimeDialog(final DatePickerPlugin datePickerPlugin,
+	private Runnable runnableTimeDialog(final MdPickerPlugin datePickerPlugin,
 			final int theme, final Context currentCtx, final CallbackContext callbackContext,
 			final JsonDate jsonDate, final Calendar calendarDate) {
 		return new Runnable() {
@@ -140,7 +140,7 @@ public class DatePickerPlugin extends CordovaPlugin {
 	}
 	
 	private Runnable runnableDatePicker(
-			final DatePickerPlugin datePickerPlugin,
+			final MdPickerPlugin datePickerPlugin,
 			final int theme, final Context currentCtx,
 			final CallbackContext callbackContext, final JsonDate jsonDate) {
 		return new Runnable() {
@@ -256,11 +256,11 @@ public class DatePickerPlugin extends CordovaPlugin {
 
 	private final class DateSetListener implements OnDateSetListener {
 		private JsonDate jsonDate;
-		private final DatePickerPlugin datePickerPlugin;
+		private final MdPickerPlugin datePickerPlugin;
 		private final CallbackContext callbackContext;
 		private final int theme;
 
-		private DateSetListener(DatePickerPlugin datePickerPlugin, int theme, CallbackContext callbackContext, JsonDate jsonDate) {
+		private DateSetListener(MdPickerPlugin datePickerPlugin, int theme, CallbackContext callbackContext, JsonDate jsonDate) {
 			this.datePickerPlugin = datePickerPlugin;
 			this.callbackContext = callbackContext;
 			this.jsonDate = jsonDate;
@@ -305,7 +305,7 @@ public class DatePickerPlugin extends CordovaPlugin {
 		private Calendar calendarDate;
 		private final CallbackContext callbackContext;
 
-		private TimeSetListener(DatePickerPlugin datePickerPlugin, CallbackContext callbackContext, Calendar selectedDate) {
+		private TimeSetListener(MdPickerPlugin datePickerPlugin, CallbackContext callbackContext, Calendar selectedDate) {
 			this.callbackContext = callbackContext;
 			this.calendarDate = selectedDate != null ? selectedDate : Calendar.getInstance();
 		}
