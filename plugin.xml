@@ -23,7 +23,7 @@
             </feature>
         </config-file>
 
-        <js-module src="www/android/DatePicker.js" name="DatePicker">
+        <js-module src="www/android/MDPicker.js" name="DatePicker">
             <clobbers target="datePicker" />
         </js-module>
         <framework src="com.wdullaer:materialdatetimepicker:2.5.0" />
