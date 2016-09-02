@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-mdpicker" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+	<name>MDPicker</name>
+	<js-module name="MDPicker" src="www/MDPicker.js">
+		<clobbers target="cordova.plugins.MDPicker" />
+	</js-module>
+	<platform name="android">
+		<config-file parent="/*" target="res/xml/config.xml">
+			<feature name="MDPicker">
+				<param name="android-package" value="cordova-plugin-mdpicker.MDPicker" />
+			</feature>
+		</config-file>
+		<config-file parent="/*" target="AndroidManifest.xml">
+			
+		</config-file>
+		<source-file src="src/android/MDPicker.java" target-dir="src/cordova-plugin-mdpicker/MDPicker" />
+
+		<framework src="com.wdullaer:materialdatetimepicker:2.5.0" />
+	</platform>
+</plugin>
