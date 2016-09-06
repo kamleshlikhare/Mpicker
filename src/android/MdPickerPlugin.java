@@ -27,8 +27,12 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.TimePickerDialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
+//import android.app.TimePickerDialog;
+
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener;
+//import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -37,18 +41,33 @@ import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.TimePicker;
 
+import com.wdullaer.materialdatetimepicker.Utils;
+import android.support.v4.app.Fragment;
+import android.app.FragmentTransaction;
+
 @SuppressLint("NewApi")
-public class MdPickerPlugin extends CordovaPlugin {
+public class MdPickerPlugin extends CordovaPlugin implements TimePickerDialog.OnTimeSetListener {
 
 	private static final String ACTION_DATE = "date";
 	private static final String ACTION_TIME = "time";
 	private static final String RESULT_ERROR = "error";
 	private static final String RESULT_CANCEL = "cancel";
 	private final String pluginName = "MdPickerPlugin";
-	
+
 	// On some devices, onDateSet or onTimeSet are being called twice
 	private boolean called = false;
 	private boolean canceled = false;
+
+
+	@Override
+	public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+		String hourString = hourOfDay < 10 ? "0"+hourOfDay : ""+hourOfDay;
+		String minuteString = minute < 10 ? "0"+minute : ""+minute;
+		String secondString = second < 10 ? "0"+second : ""+second;
+		String time = "You picked the following time: "+hourString+"h"+minuteString+"m"+secondString+"s";
+//		timeTextView.setText(time);
+	}
+
 
 	@Override
 	public boolean execute(final String action, final JSONArray data, final CallbackContext callbackContext) {
@@ -68,12 +87,14 @@ public class MdPickerPlugin extends CordovaPlugin {
 		Context currentCtx = cordova.getActivity();
 		Runnable runnable;
 		JsonDate jsonDate = new JsonDate().fromJson(data);
-		    
+
     // Retrieve Android theme
     JSONObject options = data.optJSONObject(0);
     int theme = options.optInt("androidTheme", 1);
 
 		if (ACTION_TIME.equalsIgnoreCase(jsonDate.action)) {
+
+
 			runnable = runnableTimeDialog(datePickerPlugin, theme, currentCtx,
 					callbackContext, jsonDate, Calendar.getInstance(TimeZone.getDefault()));
 
@@ -83,62 +104,91 @@ public class MdPickerPlugin extends CordovaPlugin {
 
 		cordova.getActivity().runOnUiThread(runnable);
 	}
-	
+
 	private TimePicker timePicker;
 	private int timePickerHour = 0;
 	private int timePickerMinute = 0;
-	
+
 	private Runnable runnableTimeDialog(final MdPickerPlugin datePickerPlugin,
 			final int theme, final Context currentCtx, final CallbackContext callbackContext,
 			final JsonDate jsonDate, final Calendar calendarDate) {
 		return new Runnable() {
 			@Override
 			public void run() {
-				final TimeSetListener timeSetListener = new TimeSetListener(datePickerPlugin, callbackContext, calendarDate);
-				final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx, theme, timeSetListener, jsonDate.hour,
-						jsonDate.minutes, jsonDate.is24Hour) {
-					public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-						timePicker = view;
-						timePickerHour = hourOfDay;
-						timePickerMinute = minute;
-					}
-				};
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					timeDialog.setCancelable(true);
-					timeDialog.setCanceledOnTouchOutside(false);
-					
-					if (!jsonDate.titleText.isEmpty()){
-						timeDialog.setTitle(jsonDate.titleText);
-					}
-					if (!jsonDate.nowText.isEmpty()){
-						timeDialog.setButton(DialogInterface.BUTTON_NEUTRAL, jsonDate.nowText, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								if (timePicker != null) {
-									Calendar now = Calendar.getInstance();
-									timeSetListener.onTimeSet(timePicker, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
-								}
-							}
-						});
-			        }
-					String labelCancel = jsonDate.cancelText.isEmpty() ? currentCtx.getString(android.R.string.cancel) : jsonDate.cancelText; 
-					timeDialog.setButton(DialogInterface.BUTTON_NEGATIVE, labelCancel, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							canceled = true;
-							callbackContext.error(RESULT_CANCEL);
-						}
-					});
-					String labelOk = jsonDate.okText.isEmpty() ? currentCtx.getString(android.R.string.ok) : jsonDate.okText;
-					timeDialog.setButton(DialogInterface.BUTTON_POSITIVE, labelOk, timeDialog);
-				}
-				timeDialog.show();
-				timeDialog.updateTime(new Random().nextInt(23), new Random().nextInt(59));
-				timeDialog.updateTime(jsonDate.hour, jsonDate.minutes);
+
+
+			//	final TimeSetListener timeSetListener = new TimeSetListener(datePickerPlugin, callbackContext, calendarDate);
+				Calendar now = Calendar.getInstance();
+
+
+
+				TimePickerDialog tpd = TimePickerDialog.newInstance(
+						MdPickerPlugin.this,
+						now.get(Calendar.HOUR_OF_DAY),
+						now.get(Calendar.MINUTE),
+						true
+				);
+
+
+		tpd.show(cordova.getActivity().getFragmentManager(), "Timepickerdialog");
+
+//				final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx,now.get(Calendar.HOUR_OF_DAY)) {
+//					public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+//						timePicker = view;
+//						timePickerHour = hourOfDay;
+//						timePickerMinute = minute;
+//					}
+//				};
+
+
+//
+//				final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx, theme, timeSetListener, jsonDate.hour,
+//						jsonDate.minutes, jsonDate.is24Hour) {
+//					public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+//						timePicker = view;
+//						timePickerHour = hourOfDay;
+//						timePickerMinute = minute;
+//					}
+//				};
+
+
+
+//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//					timeDialog.setCancelable(true);
+//					timeDialog.setCanceledOnTouchOutside(false);
+//
+//					if (!jsonDate.titleText.isEmpty()){
+//						timeDialog.setTitle(jsonDate.titleText);
+//					}
+//					if (!jsonDate.nowText.isEmpty()){
+//						timeDialog.setButton(DialogInterface.BUTTON_NEUTRAL, jsonDate.nowText, new DialogInterface.OnClickListener() {
+//							@Override
+//							public void onClick(DialogInterface dialog, int which) {
+//								if (timePicker != null) {
+//									Calendar now = Calendar.getInstance();
+//									timeSetListener.onTimeSet(timePicker, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
+//								}
+//							}
+//						});
+//			        }
+//					String labelCancel = jsonDate.cancelText.isEmpty() ? currentCtx.getString(android.R.string.cancel) : jsonDate.cancelText;
+//					timeDialog.setButton(DialogInterface.BUTTON_NEGATIVE, labelCancel, new DialogInterface.OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface dialog, int which) {
+//							canceled = true;
+//							callbackContext.error(RESULT_CANCEL);
+//						}
+//					});
+//					String labelOk = jsonDate.okText.isEmpty() ? currentCtx.getString(android.R.string.ok) : jsonDate.okText;
+//					timeDialog.setButton(DialogInterface.BUTTON_POSITIVE, labelOk, timeDialog);
+//				}
+//				timeDialog.show();
+//				timeDialog.updateTime(new Random().nextInt(23), new Random().nextInt(59));
+//				timeDialog.updateTime(jsonDate.hour, jsonDate.minutes);
 			}
 		};
 	}
-	
+
 	private Runnable runnableDatePicker(
 			final MdPickerPlugin datePickerPlugin,
 			final int theme, final Context currentCtx,
@@ -155,13 +205,13 @@ public class MdPickerPlugin extends CordovaPlugin {
 				else {
 					prepareDialogPreHoneycomb(dateDialog, callbackContext, currentCtx, jsonDate);
 				}
-				
+
 				dateDialog.show();
 			}
 		};
 	}
-	
-	private void prepareDialog(final DatePickerDialog dateDialog, final OnDateSetListener dateListener, 
+
+	private void prepareDialog(final DatePickerDialog dateDialog, final OnDateSetListener dateListener,
 			final CallbackContext callbackContext, Context currentCtx, JsonDate jsonDate) {
 		dateDialog.setCancelable(true);
 		dateDialog.setCanceledOnTouchOutside(false);
@@ -178,7 +228,7 @@ public class MdPickerPlugin extends CordovaPlugin {
                 }
             });
         }
-		String labelCancel = jsonDate.cancelText.isEmpty() ? currentCtx.getString(android.R.string.cancel) : jsonDate.cancelText; 
+		String labelCancel = jsonDate.cancelText.isEmpty() ? currentCtx.getString(android.R.string.cancel) : jsonDate.cancelText;
 		dateDialog.setButton(DialogInterface.BUTTON_NEGATIVE, labelCancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -195,7 +245,7 @@ public class MdPickerPlugin extends CordovaPlugin {
 				dateListener.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
             }
         });
-        
+
         DatePicker dp = dateDialog.getDatePicker();
 		if(jsonDate.minDate > 0) {
 			dp.setMinDate(jsonDate.minDate);
@@ -204,7 +254,7 @@ public class MdPickerPlugin extends CordovaPlugin {
 			dp.setMaxDate(jsonDate.maxDate);
 		}
 	}
-	
+
 	private void prepareDialogPreHoneycomb(DatePickerDialog dateDialog,
 			final CallbackContext callbackContext, Context currentCtx, final JsonDate jsonDate){
 		java.lang.reflect.Field mDatePickerField = null;
@@ -277,63 +327,63 @@ public class MdPickerPlugin extends CordovaPlugin {
 			}
 			called = true;
 			canceled = false;
-			
+
 			Log.d("onDateSet", "called: " + called);
 			Log.d("onDateSet", "canceled: " + canceled);
 			Log.d("onDateSet", "mode: " + jsonDate.action);
-			
+
 			if (ACTION_DATE.equalsIgnoreCase(jsonDate.action)) {
 				String returnDate = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
 				Log.d("onDateSet", "returnDate: " + returnDate);
-				
+
 				callbackContext.success(returnDate);
-			
+
 			} else {
 				// Open time dialog
 				Calendar selectedDate = Calendar.getInstance();
 				selectedDate.set(Calendar.YEAR, year);
 				selectedDate.set(Calendar.MONTH, monthOfYear);
 				selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				
+
 				cordova.getActivity().runOnUiThread(runnableTimeDialog(datePickerPlugin, theme, cordova.getActivity(),
 						callbackContext, jsonDate, selectedDate));
 			}
 		}
 	}
 
-	private final class TimeSetListener implements OnTimeSetListener {
-		private Calendar calendarDate;
-		private final CallbackContext callbackContext;
+//	private final class TimeSetListener implements OnTimeSetListener {
+//		private Calendar calendarDate;
+//		private final CallbackContext callbackContext;
+//
+//		private TimeSetListener(MdPickerPlugin datePickerPlugin, CallbackContext callbackContext, Calendar selectedDate) {
+//			this.callbackContext = callbackContext;
+//			this.calendarDate = selectedDate != null ? selectedDate : Calendar.getInstance();
+//		}
+//
+//		/**
+//		 * Return the current date with the time modified as it was set in the
+//		 * time picker.
+//		 */
+//		@Override
+//		public void onTimeSet(final TimePicker view, final int hourOfDay, final int minute) {
+//			if (canceled) {
+//				return;
+//			}
+//
+//			calendarDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//			calendarDate.set(Calendar.MINUTE, minute);
+//			calendarDate.set(Calendar.SECOND, 0);
+//
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+//			String toReturn = sdf.format(calendarDate.getTime());
+//
+//			callbackContext.success(toReturn);
+//		}
+//	}
 
-		private TimeSetListener(MdPickerPlugin datePickerPlugin, CallbackContext callbackContext, Calendar selectedDate) {
-			this.callbackContext = callbackContext;
-			this.calendarDate = selectedDate != null ? selectedDate : Calendar.getInstance();
-		}
-
-		/**
-		 * Return the current date with the time modified as it was set in the
-		 * time picker.
-		 */
-		@Override
-		public void onTimeSet(final TimePicker view, final int hourOfDay, final int minute) {
-			if (canceled) {
-				return;
-			}
-			
-			calendarDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-			calendarDate.set(Calendar.MINUTE, minute);
-			calendarDate.set(Calendar.SECOND, 0);
-
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-			String toReturn = sdf.format(calendarDate.getTime());
-
-			callbackContext.success(toReturn);
-		}
-	}
-	
 	private final class JsonDate {
-		
+
 		private String action = ACTION_DATE;
 		private String titleText = "";
 		private String okText = "";
