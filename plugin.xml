@@ -27,6 +27,7 @@
             <clobbers target="datePicker" />
         </js-module>
         <framework src="com.wdullaer:materialdatetimepicker:2.5.0" />
+        <framework src="com.android.support:appcompat-v7:+"/>
         <source-file src="src/android/MdPickerPlugin.java" target-dir="src/com/plugin/mdpicker" />
     </platform>
 
