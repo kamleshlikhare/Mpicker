@@ -122,7 +122,7 @@ public class MdPickerPlugin extends CordovaPlugin implements TimePickerDialog.On
 
 
 
-				TimePickerDialog tpd = TimePickerDialog.newInstance(
+				TimePickerDialog timeDialog = TimePickerDialog.newInstance(
 						MdPickerPlugin.this,
 						now.get(Calendar.HOUR_OF_DAY),
 						now.get(Calendar.MINUTE),
@@ -130,7 +130,7 @@ public class MdPickerPlugin extends CordovaPlugin implements TimePickerDialog.On
 				);
 
 
-		tpd.show(cordova.getActivity().getFragmentManager(), "Timepickerdialog");
+		timeDialog.show(cordova.getActivity().getFragmentManager(), "Timepickerdialog");
 
 //				final TimePickerDialog timeDialog = new TimePickerDialog(currentCtx,now.get(Calendar.HOUR_OF_DAY)) {
 //					public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
