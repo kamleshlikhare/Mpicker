@@ -11,10 +11,10 @@
  
  */
 
-#import "DatePicker.h"
+#import "MDPicker.h"
 #import <Cordova/CDV.h>
 
-@interface DatePicker ()
+@interface MDPicker ()
 
 @property (nonatomic) UIPopoverController *datePickerPopover;
 
@@ -27,7 +27,7 @@
 
 @end
 
-@implementation DatePicker
+@implementation MDPicker
 
 #define isIPhone (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
 #define ANIMATION_DURATION 0.3
@@ -45,7 +45,7 @@
 
 - (BOOL)showForPhone:(NSMutableDictionary *)options {
   if(!self.datePickerContainer){
-    [[NSBundle mainBundle] loadNibNamed:@"DatePicker" owner:self options:nil];
+    [[NSBundle mainBundle] loadNibNamed:@"MDPicker" owner:self options:nil];
   } else {
       self.datePickerContainer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
   }

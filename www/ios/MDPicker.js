@@ -1,5 +1,5 @@
 /**
-  Phonegap DatePicker Plugin
+  Phonegap MdPicker Plugin
   https://github.com/sectore/phonegap3-ios-datepicker-plugin
 
   Copyright (c) Greg Allen 2011
@@ -14,7 +14,7 @@ var exec = require('cordova/exec');
 /**
  * Constructor
  */
-function DatePicker() {
+function MdPicker() {
     this._callback;
 }
 
@@ -22,7 +22,7 @@ function DatePicker() {
  * Android themes
  * @todo Avoid error when an Android theme is define...
  */
-DatePicker.prototype.ANDROID_THEMES = {
+MDPicker.prototype.ANDROID_THEMES = {
   THEME_TRADITIONAL          : 1, // default
   THEME_HOLO_DARK            : 2,
   THEME_HOLO_LIGHT           : 3,
@@ -33,7 +33,7 @@ DatePicker.prototype.ANDROID_THEMES = {
 /**
  * show - true to show the ad, false to hide the ad
  */
-DatePicker.prototype.show = function(options, cb) {
+MdPicker.prototype.show = function(options, cb) {
     var padDate = function(date) {
       if (date.length == 1) {
         return ("0" + date);
@@ -104,24 +104,24 @@ DatePicker.prototype.show = function(options, cb) {
 
     exec(null,
       null,
-      "DatePicker",
+      "MdPicker",
       "show",
       [defaults]
     );
 };
 
-DatePicker.prototype._dateSelected = function(date) {
+MdPicker.prototype._dateSelected = function(date) {
     var d = new Date(parseFloat(date) * 1000);
     if (this._callback)
         this._callback(d);
 };
 
-DatePicker.prototype._dateSelectionCanceled = function() {
+MdPicker.prototype._dateSelectionCanceled = function() {
     if (this._callback)
         this._callback();
 };
 
-DatePicker.prototype._UIPopoverArrowDirection = {
+MdPicker.prototype._UIPopoverArrowDirection = {
     "up": 1,
     "down": 2,
     "left": 4,
@@ -129,7 +129,7 @@ DatePicker.prototype._UIPopoverArrowDirection = {
     "any": 15
 };
 
-DatePicker.prototype._popoverArrowDirectionIntegerFromString = function (string) {
+MdPicker.prototype._popoverArrowDirectionIntegerFromString = function (string) {
     if (typeof this._UIPopoverArrowDirection[string] !== "undefined") {
         return this._UIPopoverArrowDirection[string];
     }
@@ -138,7 +138,7 @@ DatePicker.prototype._popoverArrowDirectionIntegerFromString = function (string)
 
 
 
-var datePicker = new DatePicker();
+var datePicker = new MdPicker();
 module.exports = datePicker;
 
 // Make plugin work under window.plugins

@@ -7,7 +7,7 @@
 
     <name>MDPicker</name>
 
-    <description>Cordova/PhoneGap DatePicker Plugin for iOS, Android and Windows Phone</description>
+    <description>Cordova/PhoneGap MdPicker Plugin for iOS, Android and Windows Phone</description>
 
     <license>MIT</license>
 
@@ -23,7 +23,7 @@
             </feature>
         </config-file>
 
-        <js-module src="www/android/MDPicker.js" name="DatePicker">
+        <js-module src="www/android/MDPicker.js" name="MdPicker">
             <clobbers target="datePicker" />
         </js-module>
         <framework src="com.wdullaer:materialdatetimepicker:2.5.0" />
@@ -34,26 +34,26 @@
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
-        <feature name="DatePicker">
-            <param name="ios-package" value="DatePicker"/>
+        <feature name="MdPicker">
+            <param name="ios-package" value="MdPicker"/>
         </feature>
         </config-file>
 
-        <js-module src="www/ios/DatePicker.js" name="DatePicker">
+        <js-module src="www/ios/MdPicker.js" name="MdPicker">
             <clobbers target="datePicker" />
         </js-module>
 
-        <header-file src="src/ios/DatePicker.h" />
-        <source-file src="src/ios/DatePicker.m" />
-        <resource-file src="src/ios/DatePicker.xib" />
+        <header-file src="src/ios/MdPicker.h" />
+        <source-file src="src/ios/MdPicker.m" />
+        <resource-file src="src/ios/MdPicker.xib" />
     </platform>
 	
     <!-- windows -->
     <platform name="windows">		
-        <js-module src="www/windows/DatePicker.js" name="DatePicker">
+        <js-module src="www/windows/MdPicker.js" name="MdPicker">
             <clobbers target="datePicker" />
         </js-module>
-        <js-module src="src/windows/DatePickerProxy.js" name="DatePickerProxy">
+        <js-module src="src/windows/MdPickerProxy.js" name="MdPickerProxy">
             <merges target="" />
         </js-module>
     </platform>
