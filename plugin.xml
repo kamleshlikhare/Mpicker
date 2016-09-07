@@ -13,7 +13,7 @@
 
     <keywords>cordova,phonegap,mdpicker,android,ios,ios7,ios8,wp</keywords>
 
-    <repo>https://github.com/VitaliiBlagodir/cordova-plugin-mdpicker.git</repo>
+    <repo>https://github.com/kamleshlikhare/Mpicker.git</repo>
 
     <!-- android -->
     <platform name="android">
